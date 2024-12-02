@@ -1,6 +1,6 @@
 const std = @import("std");
 const expect = @import("expect").expect;
-pub const OsArg = [*:0]const u8;
+pub const OsArg = [:0]const u8;
 
 argv: []const OsArg,
 i: usize = 0,
