@@ -762,7 +762,7 @@ pub fn program(comptime T: type) type {
                 T.run(res) catch |err| {
                     switch (err) {
                         error.UnexpectedArgument => try printError(options.stderr_writer, "Unexpected argument", options),
-                        else => try printError(options.stderr_writer, @errorName(err), options),
+                        else => |e| try printError(options.stderr_writer, @errorName(e), options),
                     }
                 };
             }
