@@ -3,7 +3,8 @@
 //! start with main.zig instead.
 const std = @import("std");
 const testing = std.testing;
-const expect = @import("expect").expect;
+const cmd = @import("cmd.zig");
+export const program = cmd.program;
 
 test {
     _ = @import("cmd.zig");
