@@ -428,7 +428,6 @@ pub fn program(comptime T: type) type {
             }
 
             pub fn printError(writer: std.io.AnyWriter, comptime message: []const u8, options: CallOptions) !void {
-                _ = options; // autofix
                 // const tty_config = std.io.tty.detectConfig(writer);
                 // try tty_config.setColor(writer, .red);
                 // try tty_config.setColor(writer, .bold);
@@ -436,7 +435,7 @@ pub fn program(comptime T: type) type {
                 // try tty_config.setColor(writer, .reset);
                 try writer.writeAll(message ++ "\n");
                 try writer.writeAll("\n");
-                try printHelp(writer);
+                try printHelp(writer, options);
             }
             pub fn printHelp(writer: std.io.AnyWriter, options: CallOptions) !void {
                 _ = options; // autofix
@@ -613,7 +612,7 @@ pub fn program(comptime T: type) type {
 
                 if (values.len > 0) while (iter.peeked) |entry| {
                     if (entry.kind == .value) {
-                        return error.unexpected_argument;
+                        return error.UnexpectedArgument;
                     }
                     if (map.getIndex(entry.key)) |index| {
                         values[index] = entry.value;
@@ -760,7 +759,12 @@ pub fn program(comptime T: type) type {
                 defer arena.deinit();
                 const res = try build(arena.allocator(), argv[1..], options);
 
-                try T.run(res);
+                T.run(res) catch |err| {
+                    switch (err) {
+                        error.UnexpectedArgument => try printError(options.stderr_writer, "Unexpected argument", options),
+                        else => try printError(options.stderr_writer, @errorName(err), options),
+                    }
+                };
             }
         };
     }
