@@ -4,8 +4,8 @@
 const std = @import("std");
 const testing = std.testing;
 const cmd = @import("cmd.zig");
-export const program = cmd.program;
-export const Meta = cmd.Meta;
+pub const program = cmd.program;
+pub const Meta = cmd.Meta;
 
 test {
     _ = @import("cmd.zig");
