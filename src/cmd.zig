@@ -427,14 +427,14 @@ pub fn program(comptime T: type) type {
                 };
             }
 
-            pub fn printError(writer: std.io.AnyWriter, comptime message: []const u8, options: CallOptions) !void {
+            pub fn printError(writer: std.io.AnyWriter, message: []const u8, options: CallOptions) !void {
                 // const tty_config = std.io.tty.detectConfig(writer);
                 // try tty_config.setColor(writer, .red);
                 // try tty_config.setColor(writer, .bold);
                 try writer.writeAll("Error:\n");
                 // try tty_config.setColor(writer, .reset);
-                try writer.writeAll(message ++ "\n");
-                try writer.writeAll("\n");
+                try writer.writeAll(message);
+                try writer.writeAll("\n\n");
                 try printHelp(writer, options);
             }
             pub fn printHelp(writer: std.io.AnyWriter, options: CallOptions) !void {
