@@ -727,6 +727,10 @@ pub fn program(comptime T: type) type {
                 }
 
                 var arg_iter = IterArgv.init(argv[1..]);
+                if (argv[1..].len == 0) {
+                    try printHelp(options.stderr_writer, options);
+                    return;
+                }
 
                 if (metadata) |m| if (arg_iter.peeked) |command| {
                     if (command.kind == .value) {
