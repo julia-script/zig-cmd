@@ -4,6 +4,7 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
 
     const optimize = b.standardOptimizeOption(.{});
+    const test_filter = b.option([]const u8, "test-filter", "Run tests with filter");
 
     const expect_lib = b.dependency("expect", .{
         .target = target,
@@ -29,6 +30,7 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
+        .filter = test_filter,
     });
 
     lib_unit_tests.root_module.addImport("expect", expect_module);

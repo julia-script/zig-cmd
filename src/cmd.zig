@@ -431,7 +431,7 @@ pub fn program(comptime T: type) type {
                 // const tty_config = std.io.tty.detectConfig(writer);
                 // try tty_config.setColor(writer, .red);
                 // try tty_config.setColor(writer, .bold);
-                try writer.writeAll("Error:\n");
+                try writer.writeAll("Error: ");
                 // try tty_config.setColor(writer, .reset);
                 try writer.writeAll(message);
                 try writer.writeAll("\n\n");
@@ -759,11 +759,12 @@ pub fn program(comptime T: type) type {
                 defer arena.deinit();
                 const res = try build(arena.allocator(), argv[1..], options);
 
+                const return_type = @typeInfo(@TypeOf(T.run)).@"fn".return_type.?;
+                const ErrorUnion = @typeInfo(return_type).error_union;
+                const Error = ErrorUnion.error_set;
                 T.run(res) catch |err| {
-                    switch (err) {
-                        error.UnexpectedArgument => try printError(options.stderr_writer, "Unexpected argument", options),
-                        else => |e| try printError(options.stderr_writer, @errorName(e), options),
-                    }
+                    const _err: Error = err;
+                    try printError(options.stderr_writer, @errorName(_err), options);
                 };
             }
         };
@@ -832,8 +833,9 @@ test "program" {
         };
 
         pub fn run(self: @This()) !void {
-            std.debug.print("P\n", .{});
             _ = self; // autofix
+            // std.debug.print("aa\n", .{});
+            return error.Abc;
         }
     });
 
